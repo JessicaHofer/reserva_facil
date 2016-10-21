@@ -3,11 +3,14 @@ package br.com.reservafacil.agendamento.modelo;
 import java.util.Calendar;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.google.common.annotations.VisibleForTesting;
 
 @Entity
 @Table(name = "AGENDAMENTO")
@@ -28,8 +31,21 @@ public class AgendamentoTransferenciaBancaria {
 	@Column(name = "DATA_AGENDAMENTO")
 	Calendar dataDeAgendamento;
 
-	@Column(name = "TIPO_TRANSACAO")
+	@Embedded
 	TipoDeTransacao tipoDeTransacao;
+
+	public AgendamentoTransferenciaBancaria() {
+	}
+
+	@VisibleForTesting
+	public AgendamentoTransferenciaBancaria(ContaBancaria contaOrigem, ContaBancaria contaDestino,
+			Double valorTransferido, Calendar dataDeAgendamento, TipoDeTransacao tipoDeTransacao) {
+		this.contaOrigem = contaOrigem;
+		this.contaDestino = contaDestino;
+		this.valorTransferido = valorTransferido;
+		this.dataDeAgendamento = dataDeAgendamento;
+		this.tipoDeTransacao = tipoDeTransacao;
+	}
 
 	public ContaBancaria getContaOrigem() {
 		return contaOrigem;

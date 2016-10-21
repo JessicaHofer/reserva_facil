@@ -5,9 +5,20 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.google.common.annotations.VisibleForTesting;
+
 @Entity
 @Table(name = "CONTA_BANCARIA")
 public class ContaBancaria {
+
+	public ContaBancaria() {
+	}
+
+	@VisibleForTesting
+	public ContaBancaria(String numeroDaConta, Double saldo) {
+		this.numeroDaConta = numeroDaConta;
+		this.saldo = saldo;
+	}
 
 	@Id
 	@Column(name = "ID_CONTA")
@@ -41,5 +52,27 @@ public class ContaBancaria {
 
 	public void setSaldo(Double saldo) {
 		this.saldo = saldo;
+	}
+
+	boolean isNumeroDaContaNoPadrao() {
+
+		if (this.numeroDaConta.contains("-")) {
+			String[] partes = this.numeroDaConta.split("-");
+			String numero = partes[0];
+			String digito = partes[1];
+
+			if (numero.length() < 5) {
+				return false;
+			}
+
+			if (digito.length() != 1) {
+				return false;
+			}
+
+		} else {
+			return false;
+		}
+
+		return true;
 	}
 }
