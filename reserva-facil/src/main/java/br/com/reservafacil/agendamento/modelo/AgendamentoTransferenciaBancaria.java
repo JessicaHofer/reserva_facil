@@ -28,6 +28,10 @@ public class AgendamentoTransferenciaBancaria {
 	Double valorTransferido;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATA_CADASTRO")
+	Calendar dataDeCadastro;
+
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATA_AGENDAMENTO")
 	Calendar dataDeAgendamento;
 
@@ -39,10 +43,12 @@ public class AgendamentoTransferenciaBancaria {
 
 	@VisibleForTesting
 	public AgendamentoTransferenciaBancaria(ContaBancaria contaOrigem, ContaBancaria contaDestino,
-			Double valorTransferido, Calendar dataDeAgendamento, TipoDeTransacao tipoDeTransacao) {
+			Double valorTransferido, Calendar dataDeCadastro, Calendar dataDeAgendamento,
+			TipoDeTransacao tipoDeTransacao) {
 		this.contaOrigem = contaOrigem;
 		this.contaDestino = contaDestino;
 		this.valorTransferido = valorTransferido;
+		this.dataDeCadastro = dataDeCadastro;
 		this.dataDeAgendamento = dataDeAgendamento;
 		this.tipoDeTransacao = tipoDeTransacao;
 	}
@@ -67,6 +73,18 @@ public class AgendamentoTransferenciaBancaria {
 		return valorTransferido;
 	}
 
+	public void setValorTransferido(Double valorTransferido) {
+		this.valorTransferido = valorTransferido;
+	}
+
+	public Calendar getDataDeCadastro() {
+		return dataDeCadastro;
+	}
+
+	public void setDataDeCadastro(Calendar dataDeCadastro) {
+		this.dataDeCadastro = dataDeCadastro;
+	}
+
 	public Calendar getDataDeAgendamento() {
 		return dataDeAgendamento;
 	}
@@ -81,9 +99,5 @@ public class AgendamentoTransferenciaBancaria {
 
 	public void setTipoDeTransacao(TipoDeTransacao tipoDeTransacao) {
 		this.tipoDeTransacao = tipoDeTransacao;
-	}
-
-	public void setValorTransferido(Double valorTransferido) {
-		this.valorTransferido = valorTransferido;
 	}
 }
