@@ -2,9 +2,14 @@ package br.com.reservafacil.agendamento.modelo;
 
 import java.util.Calendar;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -16,12 +21,16 @@ import com.google.common.annotations.VisibleForTesting;
 @Table(name = "AGENDAMENTO")
 public class AgendamentoTransferenciaBancaria {
 
-	@OneToOne
-	@Column(name = "CONTA_ORIGEM")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@OneToOne(cascade = { CascadeType.ALL })
+	@JoinColumn(name = "CONTA_ORIGEM_ID")
 	ContaBancaria contaOrigem;
 
-	@OneToOne
-	@Column(name = "CONTA_DESTINO")
+	@OneToOne(cascade = { CascadeType.ALL })
+	@JoinColumn(name = "CONTA_DESTINO_ID")
 	ContaBancaria contaDestino;
 
 	@Column(name = "VALOR_TRANSFERIDO")

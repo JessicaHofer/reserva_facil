@@ -2,6 +2,8 @@ package br.com.reservafacil.agendamento.modelo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -21,6 +23,7 @@ public class ContaBancaria {
 	}
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID_CONTA")
 	private Long id;
 
@@ -54,7 +57,7 @@ public class ContaBancaria {
 		this.saldo = saldo;
 	}
 
-	boolean isNumeroDaContaNoPadrao() {
+	public boolean isNumeroDaContaNoPadrao() {
 
 		if (this.numeroDaConta.contains("-")) {
 			String[] partes = this.numeroDaConta.split("-");

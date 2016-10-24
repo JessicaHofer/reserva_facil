@@ -1,11 +1,17 @@
 package br.com.reservafacil.agendamento.controller;
 
 import java.util.Calendar;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.google.common.annotations.VisibleForTesting;
+
+import br.com.reservafacil.agendamento.dao.AgendamentoTransferenciaBancariaDAO;
 import br.com.reservafacil.agendamento.modelo.AgendamentoTransferenciaBancaria;
 import br.com.reservafacil.agendamento.modelo.TipoDeTransacao;
 import br.com.reservafacil.agendamento.util.Data;
@@ -15,6 +21,17 @@ public class AgendamentoTransferenciaBancariaController {
 
 	Data data;
 
+	@Autowired
+	AgendamentoTransferenciaBancariaDAO agendamentoDao;
+
+	public AgendamentoTransferenciaBancariaController() {
+	}
+
+	@VisibleForTesting
+	public AgendamentoTransferenciaBancariaController(AgendamentoTransferenciaBancariaDAO agendamentoDao) {
+		this.agendamentoDao = agendamentoDao;
+	}
+
 	@RequestMapping(value = "/carregaFormularioDeAgendamento", method = RequestMethod.GET)
 	public String carregaFormulario() {
 		return "formulario-de-agendamento";
@@ -22,6 +39,10 @@ public class AgendamentoTransferenciaBancariaController {
 
 	@RequestMapping(value = "/realizaAgendamento", method = RequestMethod.GET)
 	public String realizaAgendamento(AgendamentoTransferenciaBancaria agendamento) {
+
+		if (!agendamento.getContaDestino().isNumeroDaContaNoPadrao()) {
+			return "tela-de-erro";
+		}
 
 		if (agendamento.getValorTransferido() > agendamento.getContaOrigem().getSaldo()) {
 			return "tela-de-erro";
@@ -48,6 +69,8 @@ public class AgendamentoTransferenciaBancariaController {
 		TipoDeTransacao tipoDeTransacao = agendamento.getTipoDeTransacao();
 		tipoDeTransacao.setTaxa(taxa);
 
+		agendamentoDao.insere(agendamento);
+
 		return "tela-de-confirmacao";
 	}
 
@@ -72,6 +95,8 @@ public class AgendamentoTransferenciaBancariaController {
 			TipoDeTransacao tipoDeTransacao = agendamento.getTipoDeTransacao();
 			tipoDeTransacao.setTaxa(taxa);
 		}
+
+		agendamentoDao.insere(agendamento);
 
 		return "tela-de-confirmacao";
 	}
@@ -151,6 +176,8 @@ public class AgendamentoTransferenciaBancariaController {
 			tipoDeTransacao.setTaxa(taxa);
 		}
 
+		agendamentoDao.insere(agendamento);
+
 		return "tela-de-confirmacao";
 	}
 
@@ -164,6 +191,16 @@ public class AgendamentoTransferenciaBancariaController {
 		} else {
 			return calculaValorComTaxaDoTipoC(agendamento);
 		}
+	}
+
+	@RequestMapping(value = "/lista-todos-os-agendamentos", method = RequestMethod.GET)
+	public String listaTodosOsAgendamentos(AgendamentoTransferenciaBancaria agendamento, Model model) {
+
+		List<AgendamentoTransferenciaBancaria> agendamentos = agendamentoDao
+				.todosAgendamentos(agendamento.getContaOrigem());
+		model.addAttribute(agendamentos);
+
+		return "lista-de-agendamentos";
 	}
 
 }
